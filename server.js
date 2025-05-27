@@ -4,7 +4,6 @@ require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const fetch = require('node-fetch');
 const crypto = require('crypto');
 const path = require('path');
 
