@@ -121,14 +121,14 @@ async function exchangeToken(req, res) {
 
     // Fetch user info with access token
     const userInfoRes = await fetch(
-      "https://open.tiktokapis.com/v2/user/info/",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${tokenData.access_token}`,
-        },
-      }
-    );
+  "https://open.tiktokapis.com/v2/user/info/?fields=open_id,union_id,avatar_url,display_name,bio_description,profile_deep_link,is_verified",
+  {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${tokenData.access_token}`,
+    },
+  }
+);
 
     const userInfo = await userInfoRes.json();
     console.log(userInfo);
