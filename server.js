@@ -121,7 +121,7 @@ async function exchangeToken(req, res) {
 
     // Fetch user info with access token
     const userInfoRes = await fetch(
-      "https://open.tiktokapis.com/v2/user/info/?fields=open_id,union_id,avatar_url,display_name'",
+      "https://open.tiktokapis.com/v2/user/info/",
       {
         method: "GET",
         headers: {
@@ -134,12 +134,11 @@ async function exchangeToken(req, res) {
     console.log(userInfo);
     //For reads
 
-   return res.send(`
-  <h1>✅ Welcome, ${userInfo.data.user.display_name}!</h1>
-  <img src="${userInfo.data.user.avatar_url}" alt="Avatar" width="120" />
-  <p><strong>Username:</strong> ${userInfo.data.user.display_name}</p>
-  <p><strong>Profile:</strong> <a href="${userInfo.data.user.profile_deep_link}" target="_blank">View on TikTok</a></p>
-`);
+    return res.send(`
+      <h1>✅ TikTok Login Successful!</h1>
+      <p><strong>User Info:</strong></p>
+      <pre>${JSON.stringify(userInfo.data)}</pre>
+    `);
   } catch (err) {
     console.error("❌ Token exchange failed:", err);
     return res
