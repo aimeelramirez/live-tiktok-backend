@@ -1,0 +1,20 @@
+{
+  "name": "live-tiktok-backend",
+  "version": "1.0.0",
+  "description": "tiktok auth",
+  "homepage": "https://github.com/aimeelramirez/live-tiktok-backend#readme",
+  "bugs": {
+    "url": "https://github.com/aimeelramirez/live-tiktok-backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aimeelramirez/live-tiktok-backend.git"
+  },
+  "license": "MIT",
+  "author": "aimeelramirez",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  }
+}
