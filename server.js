@@ -56,7 +56,7 @@ app.get("/oauth", (req, res) => {
 
   const params = new URLSearchParams({
     client_key: TIKTOK_CLIENT_KEY,
-    scope: "user.info.basic user.info.profile user.info.stats",
+    scope: "user.info.basic,user.info.profile,user.info.stats",
     response_type: "code",
     redirect_uri: TIKTOK_REDIRECT_URI,
     state: csrfState,
