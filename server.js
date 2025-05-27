@@ -5,7 +5,6 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const crypto = require("crypto");
-const fetch = require("node-fetch");
 const path = require("path");
 
 const app = express();
