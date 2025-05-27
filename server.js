@@ -5,6 +5,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const crypto = require('crypto');
+const fetch = require('node-fetch');
 const path = require('path');
 
 const app = express();
@@ -102,11 +103,20 @@ async function exchangeToken(req, res) {
       return res.status(500).send(`<h1>Token Exchange Error</h1><p>${tokenData.error_description || tokenData.error}</p>`);
     }
 
+    // Fetch user info with access token
+    const userInfoRes = await fetch('https://open.tiktokapis.com/v2/user/info/', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${tokenData.access_token}`
+      }
+    });
+
+    const userInfo = await userInfoRes.json();
+
     return res.send(`
       <h1>✅ TikTok Login Successful!</h1>
-      <p><strong>Access Token:</strong> ${tokenData.access_token}</p>
-      <p><strong>Scopes:</strong> ${req.tiktok.scopes || 'unknown'}</p>
-      <p><strong>Expires In:</strong> ${tokenData.expires_in} seconds</p>
+      <p><strong>User Info:</strong></p>
+      <pre>${JSON.stringify(userInfo.data, null, 2)}</pre>
     `);
   } catch (err) {
     console.error('❌ Token exchange failed:', err);
