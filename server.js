@@ -131,11 +131,13 @@ async function exchangeToken(req, res) {
     );
 
     const userInfo = await userInfoRes.json();
+    console.log(userInfo);
+    //For reads
 
     return res.send(`
       <h1>✅ TikTok Login Successful!</h1>
       <p><strong>User Info:</strong></p>
-      <pre>${JSON.stringify(userInfo.data, null, 2)}</pre>
+      <pre>${JSON.stringify(userInfo.data)}</pre>
     `);
   } catch (err) {
     console.error("❌ Token exchange failed:", err);
