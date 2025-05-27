@@ -134,11 +134,22 @@ async function exchangeToken(req, res) {
     console.log(userInfo);
     //For reads
 
-    return res.send(`
-      <h1>✅ TikTok Login Successful!</h1>
-      <p><strong>User Info:</strong></p>
-      <pre>${JSON.stringify(userInfo.data)}</pre>
-    `);
+   const user = userInfo.data.user || {};
+
+return res.send(`
+  <h1>✅ TikTok Login Successful!</h1>
+  <p><strong>Welcome, ${user.display_name || "User"}!</strong></p>
+  ${user.avatar_url ? `<img src="${user.avatar_url}" alt="Avatar" style="height:100px;border-radius:50%;" />` : ""}
+  <ul>
+    <li><strong>Open ID:</strong> ${user.open_id || "N/A"}</li>
+    <li><strong>Union ID:</strong> ${user.union_id || "N/A"}</li>
+    <li><strong>Bio:</strong> ${user.bio_description || "N/A"}</li>
+    <li><strong>Verified:</strong> ${user.is_verified ? "Yes" : "No"}</li>
+    <li><strong>Profile Link:</strong> ${user.profile_deep_link ? `<a href="${user.profile_deep_link}" target="_blank">View Profile</a>` : "N/A"}</li>
+  </ul>
+  <pre>${JSON.stringify(userInfo, null, 2)}</pre>
+`);
+
   } catch (err) {
     console.error("❌ Token exchange failed:", err);
     return res
