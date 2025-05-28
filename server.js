@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const crypto = require("crypto");
 const path = require("path");
+const { WebcastPushConnection } = require("tiktok-live-connector");
 
 const app = express();
 
@@ -121,35 +122,64 @@ async function exchangeToken(req, res) {
 
     // Fetch user info with access token
     const userInfoRes = await fetch(
-  "https://open.tiktokapis.com/v2/user/info/?fields=open_id,union_id,avatar_url,display_name,bio_description,profile_deep_link,is_verified",
-  {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${tokenData.access_token}`,
-    },
-  }
-);
+      "https://open.tiktokapis.com/v2/user/info/?fields=open_id,union_id,avatar_url,display_name,bio_description,profile_deep_link,is_verified",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${tokenData.access_token}`,
+        },
+      }
+    );
 
     const userInfo = await userInfoRes.json();
     console.log(userInfo);
     //For reads
 
-   const user = userInfo.data.user || {};
+    const user = userInfo.data.user || {};
 
-return res.send(`
+    // Optionally start TikTok-Live-Connector using username
+    if (user.display_name) {
+      const tiktokLive = new WebcastPushConnection(user.display_name);
+      tiktokLive
+        .connect()
+        .then((state) => {
+          console.log("🎥 LIVE connected:", state);
+
+          tiktokLive.on("chat", (data) => {
+            console.log("💬 Chat:", data);
+          });
+
+          tiktokLive.on("gift", (data) => {
+            console.log("🎁 Gift:", data);
+          });
+
+          tiktokLive.on("like", (data) => {
+            console.log("❤️ Like:", data);
+          });
+        })
+        .catch((err) => console.error("Live Connect Error:", err));
+    }
+    return res.send(`
   <h1>✅ TikTok Login Successful!</h1>
   <p><strong>Welcome, ${user.display_name || "User"}!</strong></p>
-  ${user.avatar_url ? `<img src="${user.avatar_url}" alt="Avatar" style="height:100px;border-radius:50%;" />` : ""}
+  ${
+    user.avatar_url
+      ? `<img src="${user.avatar_url}" alt="Avatar" style="height:100px;border-radius:50%;" />`
+      : ""
+  }
   <ul>
     <li><strong>Open ID:</strong> ${user.open_id || "N/A"}</li>
     <li><strong>Union ID:</strong> ${user.union_id || "N/A"}</li>
     <li><strong>Bio:</strong> ${user.bio_description || "N/A"}</li>
     <li><strong>Verified:</strong> ${user.is_verified ? "Yes" : "No"}</li>
-    <li><strong>Profile Link:</strong> ${user.profile_deep_link ? `<a href="${user.profile_deep_link}" target="_blank">View Profile</a>` : "N/A"}</li>
+    <li><strong>Profile Link:</strong> ${
+      user.profile_deep_link
+        ? `<a href="${user.profile_deep_link}" target="_blank">View Profile</a>`
+        : "N/A"
+    }</li>
   </ul>
   <pre>${JSON.stringify(userInfo, null, 2)}</pre>
 `);
-
   } catch (err) {
     console.error("❌ Token exchange failed:", err);
     return res
